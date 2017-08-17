@@ -175,7 +175,7 @@ bool student::chg(StuInfo *info, bool type)
     return 1;
 }
 
-StuInfo *student::serh(StuInfo *info, bool type)
+StuInfo *student::serh(StuInfo *info, int type)
 {
     StuInfo *p = student::head;
     while(p != NULL)

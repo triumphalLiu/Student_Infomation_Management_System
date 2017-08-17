@@ -116,7 +116,7 @@ bool course::del(CourseInfo *info, bool type)
     return 1;
 }
 
-CourseInfo *course::serh(CourseInfo *info, bool type)
+CourseInfo *course::serh(CourseInfo *info, int type)
 {
     CourseInfo *p = course::head;
     while(p != NULL)

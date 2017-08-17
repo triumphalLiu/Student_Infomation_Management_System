@@ -29,6 +29,7 @@
     </property>
     <addaction name="stu_read"/>
     <addaction name="stu_save"/>
+    <addaction name="separator"/>
     <addaction name="stu_del"/>
     <addaction name="stu_add"/>
     <addaction name="stu_chg"/>
@@ -39,6 +40,7 @@
     </property>
     <addaction name="class_read"/>
     <addaction name="class_save"/>
+    <addaction name="separator"/>
     <addaction name="class_del"/>
     <addaction name="class_add"/>
    </widget>
@@ -46,6 +48,14 @@
     <property name="title">
      <string>选课管理</string>
     </property>
+    <addaction name="choose_class"/>
+    <addaction name="delete_class"/>
+    <addaction name="separator"/>
+    <addaction name="search_stu"/>
+    <addaction name="search_class"/>
+    <addaction name="separator"/>
+    <addaction name="choose_read"/>
+    <addaction name="choose_save"/>
    </widget>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
@@ -157,6 +167,54 @@
    </property>
    <property name="shortcut">
     <string>M</string>
+   </property>
+  </action>
+  <action name="choose_class">
+   <property name="text">
+    <string>选择课程</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="delete_class">
+   <property name="text">
+    <string>退选课程</string>
+   </property>
+   <property name="shortcut">
+    <string>D</string>
+   </property>
+  </action>
+  <action name="search_stu">
+   <property name="text">
+    <string>查询单个学生</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="search_class">
+   <property name="text">
+    <string>查询单个课程</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
+  </action>
+  <action name="choose_read">
+   <property name="text">
+    <string>读取文件</string>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
+   </property>
+  </action>
+  <action name="choose_save">
+   <property name="text">
+    <string>保存为</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
    </property>
   </action>
  </widget>

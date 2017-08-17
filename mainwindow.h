@@ -34,6 +34,18 @@ private slots:
 
     void on_class_add_triggered();
 
+    void on_choose_class_triggered();
+
+    void on_delete_class_triggered();
+
+    void on_choose_read_triggered();
+
+    void on_choose_save_triggered();
+
+    void on_search_stu_triggered();
+
+    void on_search_class_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

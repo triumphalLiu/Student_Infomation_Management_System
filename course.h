@@ -17,7 +17,7 @@ public:
     void init();
     bool read(const char *);
     bool save(const char *);
-    CourseInfo *serh(CourseInfo *, bool);
+    CourseInfo *serh(CourseInfo *, int);
     bool add(CourseInfo *);
     bool del(CourseInfo *, bool);
 };
