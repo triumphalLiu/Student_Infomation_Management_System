@@ -2,14 +2,16 @@
 #include "ui_mainwindow.h"
 #include <cstring>
 #include <cstdio>
-#include <QMessageBox>
+#include <QByteArray>
+#include <QFile>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QIODevice>
+#include <QMessageBox>
 #include <QString>
-#include <QByteArray>
+#include <QStringList>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QFile>
 #include "student.h"
 extern student Student;
 
@@ -27,7 +29,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_stu_read_triggered()
 {
-    Student.read("student.txt");
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, "打开文件", ".", ("文本文件(*.txt)"));
+    if(fileNames.size() == 0) return;
+    for(int i = 0; i < fileNames.size(); ++i)
+    {
+        QByteArray bytearray = fileNames[i].toLocal8Bit();
+        char *temp = bytearray.data();
+        if(temp == NULL) continue;
+        Student.read(temp);
+    }
     char buffer[20];
     itoa(Student.count, buffer,10);
     char output[100];
@@ -39,7 +49,11 @@ void MainWindow::on_stu_read_triggered()
 
 void MainWindow::on_stu_save_triggered()
 {
-    Student.save("student2.txt");
+    QString fileName = QFileDialog::getOpenFileName(this, "另存为...", "C:", ("文本文件(*.txt)"));
+    if(fileName.length() == 0) return;
+    QByteArray bytearray = fileName.toLocal8Bit();
+    char *temp = bytearray.data();
+    Student.save(temp);
     QMessageBox::information(NULL, "保存完成", "保存完成", QMessageBox::Ok, QMessageBox::Ok);
 }
 
@@ -72,7 +86,6 @@ void MainWindow::on_stu_add_triggered()
         return;
     QByteArray bytearray2 = text2.toLocal8Bit();
     char *stuname = bytearray2.data();
-    printf("%s\n",stuname);
 
     StuInfo *p = new StuInfo;
     p->next = NULL;
