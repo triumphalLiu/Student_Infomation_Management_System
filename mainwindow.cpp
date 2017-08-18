@@ -12,12 +12,15 @@
 #include <QStringList>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QTabWidget>
 #include "student.h"
 #include "course.h"
 #include "choose.h"
 extern student Student;
 extern course Course;
 extern choose Choose;
+extern QByteArray AnsiToUtf8(QByteArray &ansi);
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,6 +33,34 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//============DisplayToTableWeight
+void MainWindow::display_student_info()
+{
+    ui->tableWidget->clearContents();
+    for(int loop = 0; loop < ui->tableWidget->rowCount();)
+        ui->tableWidget->removeRow(loop);
+    StuInfo *p = Student.head;
+    while(p != NULL)
+    {
+        int rows = ui->tableWidget->rowCount();
+        ui->tableWidget->insertRow(rows);
+        ui->tableWidget->setItem(rows, 0, new QTableWidgetItem(p->name));
+        ui->tableWidget->setItem(rows, 1, new QTableWidgetItem(p->id));
+        p = p->next;
+    }
+}
+
+void MainWindow::display_course_info()
+{
+
+}
+
+void MainWindow::display_choose_info()
+{
+
+}
+
+//============StudentInfos
 void MainWindow::on_stu_read_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, "打开文件", ".", ("文本文件(*.txt)"));
@@ -44,10 +75,11 @@ void MainWindow::on_stu_read_triggered()
     char buffer[20];
     itoa(Student.count, buffer,10);
     char output[100];
-    strcat(output, "一共导入");
+    strcat(output, "导入完成，当前一共有");
     strcat(output, buffer);
     strcat(output, "个数据");
     QMessageBox::information(NULL, "导入完成", output, QMessageBox::Ok, QMessageBox::Ok);
+    MainWindow::display_student_info();
 }
 
 void MainWindow::on_stu_save_triggered()
@@ -58,6 +90,7 @@ void MainWindow::on_stu_save_triggered()
     char *temp = bytearray.data();
     Student.save(temp);
     QMessageBox::information(NULL, "保存完成", "保存完成", QMessageBox::Ok, QMessageBox::Ok);
+    MainWindow::display_student_info();
 }
 
 void MainWindow::on_stu_del_triggered()
@@ -65,7 +98,8 @@ void MainWindow::on_stu_del_triggered()
     QString text = QInputDialog::getText(NULL, tr("删除学生数据"), tr("请输入学号信息"));
     if(text == NULL)
         return;
-    QByteArray bytearray = text.toLatin1();
+    QByteArray bytearray = text.toLocal8Bit();
+    bytearray = AnsiToUtf8(bytearray);
     char *temp = bytearray.data();
     StuInfo *p = new StuInfo;
     p->next = NULL;
@@ -80,6 +114,7 @@ void MainWindow::on_stu_del_triggered()
     }
     else
         QMessageBox::information(NULL, "删除结果", "删除失败-不存在此学号", QMessageBox::Ok, QMessageBox::Ok);
+    MainWindow::display_student_info();
 }
 
 void MainWindow::on_stu_add_triggered()
@@ -87,13 +122,15 @@ void MainWindow::on_stu_add_triggered()
     QString text = QInputDialog::getText(NULL, tr("添加学生数据"), tr("请输入学号信息"));
     if(text == NULL)
         return;
-    QByteArray bytearray = text.toLatin1();
+    QByteArray bytearray = text.toLocal8Bit();
+    bytearray = AnsiToUtf8(bytearray);
     char *stuid = bytearray.data();
 
     QString text2 = QInputDialog::getText(NULL, tr("添加学生数据"), tr("请输入姓名信息"));
     if(text2 == NULL)
         return;
     QByteArray bytearray2 = text2.toLocal8Bit();
+    bytearray2 = AnsiToUtf8(bytearray2);
     char *stuname = bytearray2.data();
 
     StuInfo *p = new StuInfo;
@@ -105,6 +142,7 @@ void MainWindow::on_stu_add_triggered()
         QMessageBox::information(NULL, "添加结果", "添加成功", QMessageBox::Ok, QMessageBox::Ok);
     else
         QMessageBox::information(NULL, "添加结果", "添加失败-学号重复", QMessageBox::Ok, QMessageBox::Ok);
+    MainWindow::display_student_info();
 }
 
 void MainWindow::on_stu_chg_triggered()
@@ -112,12 +150,14 @@ void MainWindow::on_stu_chg_triggered()
     QString text = QInputDialog::getText(NULL, tr("修改学生数据"), tr("请输入学号信息"));
     if(text == NULL)
         return;
-    QByteArray bytearray = text.toLatin1();
+    QByteArray bytearray = text.toLocal8Bit();
+    bytearray = AnsiToUtf8(bytearray);
     char *stuid = bytearray.data();
     QString text2 = QInputDialog::getText(NULL, tr("修改学生数据"), tr("请输入新姓名信息"));
     if(text2 == NULL)
         return;
     QByteArray bytearray2 = text2.toLocal8Bit();
+    bytearray2 = AnsiToUtf8(bytearray2);
     char *stunewname = bytearray2.data();
     StuInfo *p = new StuInfo;
     p->next = NULL;
@@ -127,8 +167,10 @@ void MainWindow::on_stu_chg_triggered()
         QMessageBox::information(NULL, "修改结果", "修改成功", QMessageBox::Ok, QMessageBox::Ok);
     else
         QMessageBox::information(NULL, "修改结果", "修改失败-学号不存在", QMessageBox::Ok, QMessageBox::Ok);
+    MainWindow::display_student_info();
 }
 
+//============CourseInfos
 void MainWindow::on_class_read_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, "打开文件", ".", ("文本文件(*.txt)"));
@@ -143,7 +185,7 @@ void MainWindow::on_class_read_triggered()
     char buffer[20];
     itoa(Course.count, buffer,10);
     char output[100];
-    strcat(output, "一共导入");
+    strcat(output, "导入完成，当前一共有");
     strcat(output, buffer);
     strcat(output, "个课程信息");
     QMessageBox::information(NULL, "导入完成", output, QMessageBox::Ok, QMessageBox::Ok);
@@ -271,6 +313,7 @@ void MainWindow::on_delete_class_triggered()
         QMessageBox::information(NULL, "退课结果", "退课失败-未选课", QMessageBox::Ok, QMessageBox::Ok);
 }
 
+//============ChooseInfos
 void MainWindow::on_choose_read_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, "打开文件", ".", ("文本文件(*.txt)"));
@@ -285,7 +328,7 @@ void MainWindow::on_choose_read_triggered()
     char buffer[20];
     itoa(Choose.count, buffer,10);
     char output[100];
-    strcat(output, "一共导入");
+    strcat(output, "导入完成，当前一共有");
     strcat(output, buffer);
     strcat(output, "个数据");
     QMessageBox::information(NULL, "导入完成", output, QMessageBox::Ok, QMessageBox::Ok);

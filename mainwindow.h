@@ -14,6 +14,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void display_student_info();
+    void display_course_info();
+    void display_choose_info();
 
 private slots:
     void on_stu_read_triggered();

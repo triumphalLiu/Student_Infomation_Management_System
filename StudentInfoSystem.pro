@@ -28,7 +28,8 @@ SOURCES += \
         mainwindow.cpp \
     student.cpp \
     course.cpp \
-    choose.cpp
+    choose.cpp \
+    code_convert.cpp
 
 HEADERS += \
         mainwindow.h \
