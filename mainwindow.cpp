@@ -405,7 +405,7 @@ void MainWindow::on_choose_read_triggered()
 
 void MainWindow::on_choose_save_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "另存为...", "C:", ("文本文件(*.txt)"));
+    QString fileName = QFileDialog::getOpenFileName(this, "另存为...", ".", ("文本文件(*.txt)"));
     if(fileName.length() == 0) return;
     QByteArray bytearray = fileName.toLocal8Bit();
     char *temp = bytearray.data();
