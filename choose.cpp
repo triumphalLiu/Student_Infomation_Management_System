@@ -25,20 +25,23 @@ bool choose::read(const char *filename)
         return 0;
     char ch;
     int i = 0;
-    bool mode = 0;
+    int mode = 0;
     StuCrsInfo *p = new StuCrsInfo;
     p->next = NULL;
+    char grade_temp[20];
     while((ch = fgetc(fp)) != EOF)
     {
         if(mode == 0 && ch != ' ' && ch != '\n')
             p->stu[i++]=ch;
         else if(mode == 1 && ch != ' ' && ch != '\n')
             p->crs[i++] = ch;
+        else if(mode == 2 && ch != ' ' && ch != '\n')
+            grade_temp[i++] = ch;
         else if(ch == '\n')
         {
-            p->crs[i] = '\0';
             i = 0;
             mode = 0;
+            p->grade = atoi(grade_temp);
             if(choose::serh(p, 2) == NULL)
             {
                 if(choose::head != NULL)
@@ -51,9 +54,17 @@ bool choose::read(const char *filename)
         }
         else if(ch == ' ')
         {
-            p->stu[i] = '\0';
-            i = 0;
-            mode = 1;
+            if(mode == 0)
+            {
+                p->stu[i] = '\0';
+                i = 0;
+            }
+            else if(mode == 1)
+            {
+                p->crs[i] = '\0';
+                i = 0;
+            }
+            mode++;
         }
     }
     fclose(fp);
@@ -123,6 +134,7 @@ StuCrsInfo *choose::serh(StuCrsInfo *info, int type)
             StuCrsInfo *temp = new StuCrsInfo;
             strcpy(temp->crs, p->crs);
             strcpy(temp->stu, p->stu);
+            temp->grade = p->grade;
             temp->next = info;
             info = temp;
         }
@@ -131,10 +143,29 @@ StuCrsInfo *choose::serh(StuCrsInfo *info, int type)
             StuCrsInfo *temp = new StuCrsInfo;
             strcpy(temp->crs, p->crs);
             strcpy(temp->stu, p->stu);
+            temp->grade = p->grade;
             temp->next = info;
             info = temp;
         }
         p = p->next;
     }
     return (type < 3) ? NULL : info;
+}
+
+bool choose::addgrade(StuCrsInfo *p)
+{
+    StuCrsInfo *node = choose::serh(p, 2);
+    if(node == NULL)
+        return 0;
+    node->grade = p->grade;
+    return 1;
+}
+
+bool choose::delgrade(StuCrsInfo *p)
+{
+    StuCrsInfo *node = choose::serh(p, 2);
+    if(node == NULL)
+        return 0;
+    node->grade = -1;
+    return 1;
 }

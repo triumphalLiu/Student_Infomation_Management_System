@@ -95,7 +95,7 @@
        <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>240</number>
+       <number>160</number>
       </attribute>
       <column>
        <property name="text">
@@ -105,6 +105,11 @@
       <column>
        <property name="text">
         <string>学分</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>类型</string>
        </property>
       </column>
      </widget>
@@ -135,7 +140,7 @@
        <bool>true</bool>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>120</number>
+       <number>96</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
        <number>25</number>
@@ -158,6 +163,11 @@
       <column>
        <property name="text">
         <string>学分</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>成绩</string>
        </property>
       </column>
      </widget>
@@ -183,6 +193,8 @@
     <addaction name="stu_del"/>
     <addaction name="stu_add"/>
     <addaction name="stu_chg"/>
+    <addaction name="separator"/>
+    <addaction name="caculate"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -206,6 +218,9 @@
     <addaction name="separator"/>
     <addaction name="search_stu"/>
     <addaction name="search_class"/>
+    <addaction name="separator"/>
+    <addaction name="add_grade"/>
+    <addaction name="del_grade"/>
    </widget>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
@@ -356,6 +371,21 @@
    </property>
    <property name="shortcut">
     <string>S</string>
+   </property>
+  </action>
+  <action name="add_grade">
+   <property name="text">
+    <string>添加成绩</string>
+   </property>
+  </action>
+  <action name="del_grade">
+   <property name="text">
+    <string>删除成绩</string>
+   </property>
+  </action>
+  <action name="caculate">
+   <property name="text">
+    <string>计算学分绩</string>
    </property>
   </action>
  </widget>

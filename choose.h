@@ -4,6 +4,7 @@
 struct StuCrsInfo{
     char stu[20];
     char crs[20];
+    int grade;
     StuCrsInfo *next;
 };
 
@@ -19,5 +20,7 @@ public:
     StuCrsInfo *serh(StuCrsInfo *, int);
     bool add(StuCrsInfo *);
     bool del(StuCrsInfo *, int);
+    bool addgrade(StuCrsInfo *);
+    bool delgrade(StuCrsInfo *);
 };
 #endif // CHOOSE_H

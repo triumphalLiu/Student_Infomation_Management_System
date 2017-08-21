@@ -51,6 +51,12 @@ private slots:
 
     void on_search_class_triggered();
 
+    void on_add_grade_triggered();
+
+    void on_del_grade_triggered();
+
+    void on_caculate_triggered();
+
 private:
     Ui::MainWindow *ui;
     QAction *Act_Stu_Del;
@@ -62,6 +68,9 @@ private:
     QAction *Act_Cho_Add;
     QAction *Act_Srh_Stu;
     QAction *Act_Srh_Crs;
+    QAction *Act_ADDGRADE;
+    QAction *Act_DELGRADE;
+    QAction *Act_Calc;
 };
 
 #endif // MAINWINDOW_H

@@ -25,8 +25,9 @@ bool course::read(const char *filename)
         return 0;
     char ch;
     int i = 0;
-    bool mode = 0;
+    int mode = 0;
     char score_temp[20] = {'\0'};
+    char type_temp;
     CourseInfo *p = new CourseInfo;
     p->next = NULL;
     while((ch = fgetc(fp)) != EOF)
@@ -35,14 +36,17 @@ bool course::read(const char *filename)
             p->name[i++]=ch;
         else if(mode == 1 && ch != ' ' && ch != '\n')
             score_temp[i++] = ch;
+        else if(mode == 2 && ch != ' ' && ch != '\n')
+            type_temp = ch;
         else if(ch == '\n')
         {
             score_temp[i] = '\0';
             p->score = atoi(score_temp);
+            p->type = type_temp - '0';
             i = 0;
             mode = 0;
             CourseInfo *point;
-            if((point = course::serh(p, 0)) != NULL)
+            if((point = course::serh(p, 0, course::head)) != NULL)
             {
                 strcpy(point->name, p->name);
             }
@@ -58,18 +62,21 @@ bool course::read(const char *filename)
         }
         else if(ch == ' ')
         {
-            p->name[i] = '\0';
-            i = 0;
-            mode = 1;
+            if(mode == 0)
+            {
+                p->name[i] = '\0';
+                i = 0;
+            }
+            mode++;
         }
     }
     fclose(fp);
     return 1;
 }
 
-bool course::save(const char *filename)
+bool course::save(const char *filename, CourseInfo *head)
 {
-    CourseInfo *p = course::head;
+    CourseInfo *p = head;
     FILE *fp = fopen(filename, "w");
     while(p != NULL)
     {
@@ -85,26 +92,26 @@ bool course::save(const char *filename)
     return 1;
 }
 
-bool course::add(CourseInfo *info)
+bool course::add(CourseInfo *info, CourseInfo *head)
 {
-    if(!(course::serh(info, 0) == NULL))
+    if(!(course::serh(info, 0, head) == NULL))
         return 0;
     course::count += 1;
-    info->next = course::head;
-    course::head = info;
+    info->next = head;
+    head = info;
     return 1;
 }
 
-bool course::del(CourseInfo *info, bool type)
+bool course::del(CourseInfo *info, bool type, CourseInfo *head)
 {
     CourseInfo *point;
-    CourseInfo *p = course::head;
-    if((point = course::serh(info, type)) == NULL)
+    CourseInfo *p = head;
+    if((point = course::serh(info, type, head)) == NULL)
         return 0;
     course::count -= 1;
     if(p == point)
     {
-        course::head = course::head->next;
+        head = head->next;
         return 1;
     }
     while(p->next != NULL)
@@ -116,9 +123,9 @@ bool course::del(CourseInfo *info, bool type)
     return 1;
 }
 
-CourseInfo *course::serh(CourseInfo *info, int type)
+CourseInfo *course::serh(CourseInfo *info, int type, CourseInfo *head)
 {
-    CourseInfo *p = course::head;
+    CourseInfo *p = head;
     while(p != NULL)
     {
         if(type == 0 && strcmp(info->name, p->name) == 0)
