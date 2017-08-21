@@ -95,26 +95,26 @@ bool course::save(const char *filename, CourseInfo *head)
     return 1;
 }
 
-bool course::add(CourseInfo *info, CourseInfo *head)
+bool course::add(CourseInfo *info)
 {
     if(!(course::serh(info, 0, head) == NULL))
         return 0;
     course::count += 1;
-    info->next = head;
-    head = info;
+    info->next = course::head;
+    course::head = info;
     return 1;
 }
 
-bool course::del(CourseInfo *info, bool type, CourseInfo *head)
+bool course::del(CourseInfo *info, bool type)
 {
     CourseInfo *point;
-    CourseInfo *p = head;
-    if((point = course::serh(info, type, head)) == NULL)
+    CourseInfo *p = course::head;
+    if((point = course::serh(info, type, course::head)) == NULL)
         return 0;
     course::count -= 1;
     if(p == point)
     {
-        head = head->next;
+        course::head = course::head->next;
         return 1;
     }
     while(p->next != NULL)

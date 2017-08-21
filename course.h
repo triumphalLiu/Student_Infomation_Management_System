@@ -19,8 +19,8 @@ public:
     bool read(const char *);
     bool save(const char *, CourseInfo *head);
     CourseInfo *serh(CourseInfo *, int, CourseInfo *head);
-    bool add(CourseInfo *, CourseInfo *head);
-    bool del(CourseInfo *, bool, CourseInfo *head);
+    bool add(CourseInfo *);
+    bool del(CourseInfo *, bool);
 };
 
 class course_ac: public course{

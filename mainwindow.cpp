@@ -384,7 +384,7 @@ void MainWindow::on_class_del_triggered()
     CourseInfo *p = new CourseInfo;
     p->next = NULL;
     strcpy(p->name, temp);
-    if(Course.del(p, 0, Course.head))
+    if(Course.del(p, 0))
     {
         StuCrsInfo *ps = new StuCrsInfo;
         ps->next = NULL;
@@ -419,8 +419,7 @@ void MainWindow::on_class_add_triggered()
     p->next = NULL;
     p->score = atoi(coursescore);
     strcpy(p->name, coursename);
-
-    if(Course.add(p, Course.head))
+    if(Course.add(p))
         QMessageBox::information(NULL, "添加结果", "添加成功", QMessageBox::Ok, QMessageBox::Ok);
     else
         QMessageBox::information(NULL, "添加结果", "添加失败-课程重复", QMessageBox::Ok, QMessageBox::Ok);
