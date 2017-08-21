@@ -3,10 +3,13 @@
 #include <cstring>
 #include <cstdio>
 #include <QByteArray>
+#include <QCursor>
+#include <QDebug>
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QIODevice>
+#include <QMenu>
 #include <QMessageBox>
 #include <QString>
 #include <QStringList>
@@ -26,6 +29,64 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //预先读取文件
+    Student.read("stu.txt");
+    Course.read("crs.txt");
+    Choose.read("cho.txt");
+    MainWindow::display_course_info();
+    MainWindow::display_choose_info();
+    MainWindow::display_student_info();
+    //窗口大小设置
+    setWindowFlags(windowFlags()& ~Qt::WindowMaximizeButtonHint);
+    setFixedSize(this->width(), this->height());
+    //右键菜单设置
+    Act_Stu_Del = new QAction(tr("删除学生信息"), this);
+    Act_Stu_Chg = new QAction(tr("修改学生信息"), this);
+    Act_Stu_Add = new QAction(tr("添加学生信息"), this);
+    Act_Crs_Del = new QAction(tr("删除课程"), this);
+    Act_Crs_Add = new QAction(tr("添加课程"), this);
+    Act_Cho_Del = new QAction(tr("退课"), this);
+    Act_Cho_Add = new QAction(tr("选课"), this);
+    Act_Srh_Stu = new QAction(tr("搜索当前学生所选的课程"), this);
+    Act_Srh_Crs = new QAction(tr("搜索选择当前课程的学生"), this);
+    connect(Act_Stu_Del, SIGNAL(triggered()), this, SLOT(on_stu_del_triggered()));
+    connect(Act_Stu_Chg, SIGNAL(triggered()), this, SLOT(on_stu_chg_triggered()));
+    connect(Act_Stu_Add, SIGNAL(triggered()), this, SLOT(on_stu_add_triggered()));
+    connect(Act_Crs_Del, SIGNAL(triggered()), this, SLOT(on_class_del_triggered()));
+    connect(Act_Crs_Add, SIGNAL(triggered()), this, SLOT(on_class_add_triggered()));
+    connect(Act_Cho_Del, SIGNAL(triggered()), this, SLOT(on_delete_class_triggered()));
+    connect(Act_Cho_Add, SIGNAL(triggered()), this, SLOT(on_choose_class_triggered()));
+    connect(Act_Srh_Stu, SIGNAL(triggered()), this, SLOT(on_search_stu_triggered()));
+    connect(Act_Srh_Crs, SIGNAL(triggered()), this, SLOT(on_search_class_triggered()));
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent *)
+{
+    //qDebug()<<ui->tabWidget->currentIndex();
+    QCursor cur=this->cursor();
+    QMenu *menu = new QMenu;
+    if(ui->tabWidget->currentIndex() == 0)
+    {
+        menu->addAction(Act_Stu_Del);
+        menu->addAction(Act_Stu_Chg);
+        menu->addAction(Act_Stu_Add);
+        menu->addAction(Act_Srh_Stu);
+    }
+    else if(ui->tabWidget->currentIndex() == 1)
+    {
+        menu->addAction(Act_Crs_Del);
+        menu->addAction(Act_Crs_Add);
+        menu->addAction(Act_Srh_Crs);
+    }
+    else if(ui->tabWidget->currentIndex() == 2)
+    {
+        menu->addAction(Act_Cho_Del);
+        menu->addAction(Act_Cho_Add);
+        menu->addAction(Act_Srh_Stu);
+        menu->addAction(Act_Srh_Crs);
+    }
+    menu->exec(cur.pos());
+    delete menu;
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +97,7 @@ MainWindow::~MainWindow()
 //============DisplayToTableWeight
 void MainWindow::display_student_info()
 {
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget->clearContents();
     for(int loop = 0; loop < ui->tableWidget->rowCount();)
         ui->tableWidget->removeRow(loop);
@@ -52,6 +114,7 @@ void MainWindow::display_student_info()
 
 void MainWindow::display_course_info()
 {
+    ui->tableWidget_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget_2->clearContents();
     for(int loop = 0; loop < ui->tableWidget_2->rowCount();)
         ui->tableWidget_2->removeRow(loop);
@@ -68,6 +131,7 @@ void MainWindow::display_course_info()
 
 void MainWindow::display_choose_info()
 {
+    ui->tableWidget_3->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget_3->clearContents();
     for(int loop = 0; loop < ui->tableWidget_3->rowCount();)
         ui->tableWidget_3->removeRow(loop);
@@ -136,12 +200,25 @@ void MainWindow::on_stu_save_triggered()
 
 void MainWindow::on_stu_del_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("删除学生数据"), tr("请输入学号信息"));
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                           ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                   ui->tableWidget_3->selectedItems());
+    char temp[20] = {'\0'};
+    QString text;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("删除学生数据"), tr("请输入学号信息"));
+    }
+    else
+    {
+        QTableWidgetItem *item=items.at(1);
+        text = item->text();
+    }
     if(text == NULL)
         return;
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *temp = bytearray.data();
+    strcpy(temp, bytearray.data());
     StuInfo *p = new StuInfo;
     p->next = NULL;
     strcpy(p->id, temp);
@@ -192,12 +269,26 @@ void MainWindow::on_stu_add_triggered()
 
 void MainWindow::on_stu_chg_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("修改学生数据"), tr("请输入学号信息"));
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                           ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                   ui->tableWidget_3->selectedItems());
+    char stuid[20] = {'\0'};
+    QString text;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("修改学生数据"), tr("请输入学号信息"));
+    }
+    else
+    {
+        QTableWidgetItem *item=items.at(1);
+        text = item->text();
+    }
     if(text == NULL)
         return;
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *stuid = bytearray.data();
+    strcpy(stuid, bytearray.data());
+
     QString text2 = QInputDialog::getText(NULL, tr("修改学生数据"), tr("请输入新姓名信息"));
     if(text2 == NULL)
         return;
@@ -253,12 +344,25 @@ void MainWindow::on_class_save_triggered()
 
 void MainWindow::on_class_del_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("删除课程数据"), tr("请输入课程名"));
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                           ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                   ui->tableWidget_3->selectedItems());
+    char temp[20] = {'\0'};
+    QString text;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("删除课程数据"), tr("请输入课程名"));
+    }
+    else
+    {
+        QTableWidgetItem *item=items.at(0);
+        text = item->text();
+    }
     if(text == NULL)
         return;
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *temp = bytearray.data();
+    strcpy(temp, bytearray.data());
     CourseInfo *p = new CourseInfo;
     p->next = NULL;
     strcpy(p->name, temp);
@@ -346,19 +450,35 @@ void MainWindow::on_choose_class_triggered()
 
 void MainWindow::on_delete_class_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("输入退课数据"), tr("请输入学号"));
-    if(text == NULL)
-        return;
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                           ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                   ui->tableWidget_3->selectedItems());
+    char stuid[20] = {'\0'};
+    char coursename[20] = {'\0'};
+    QString text, text2;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("输入退课数据"), tr("请输入学号"));
+        if(text == NULL)
+            return;
+
+        text2 = QInputDialog::getText(NULL, tr("输入退课数据"), tr("请输入课程名"));
+        if(text2 == NULL)
+            return;
+    }
+    else
+    {
+        QTableWidgetItem *item=items.at(0);
+        text = item->text();
+        item = items.at(2);
+        text2 = item->text();
+    }
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *stuid = bytearray.data();
-
-    QString text2 = QInputDialog::getText(NULL, tr("输入退课数据"), tr("请输入课程名"));
-    if(text2 == NULL)
-        return;
+    strcpy(stuid, bytearray.data());
     QByteArray bytearray2 = text2.toLocal8Bit();
     bytearray2 = AnsiToUtf8(bytearray2);
-    char *coursename = bytearray2.data();
+    strcpy(coursename, bytearray2.data());
 
     StuCrsInfo *p = new StuCrsInfo;
     p->next = NULL;
@@ -416,12 +536,25 @@ void MainWindow::on_choose_save_triggered()
 
 void MainWindow::on_search_stu_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("搜索"), tr("请输入学号"));
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                            ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                    ui->tableWidget_3->selectedItems());
+    char stuid[20] = {'\0'};
+    QString text;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("搜索"), tr("请输入学号"));
+    }
+    else
+    {
+        QTableWidgetItem *item = (ui->tabWidget->currentIndex() == 0)?items.at(1):items.at(0);
+        text = item->text();
+    }
     if(text == NULL)
         return;
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *stuid = bytearray.data();
+    strcpy(stuid, bytearray.data());
 
     StuCrsInfo *p = new StuCrsInfo;
     strcpy(p->stu, stuid);
@@ -452,12 +585,25 @@ void MainWindow::on_search_stu_triggered()
 
 void MainWindow::on_search_class_triggered()
 {
-    QString text = QInputDialog::getText(NULL, tr("搜索"), tr("请输入课程名"));
+    QList<QTableWidgetItem*>items = (ui->tabWidget->currentIndex() == 0) ? ui->tableWidget->selectedItems() :
+                                                                            ((ui->tabWidget->currentIndex() == 1) ? ui->tableWidget_2->selectedItems() :
+                                                                                                                    ui->tableWidget_3->selectedItems());
+    char coursename[20] = {'\0'};
+    QString text;
+    if(!items.count())
+    {
+        text = QInputDialog::getText(NULL, tr("搜索"), tr("请输入课程名"));
+    }
+    else
+    {
+        QTableWidgetItem *item = (ui->tabWidget->currentIndex() == 1)?items.at(0):items.at(2);
+        text = item->text();
+    }
     if(text == NULL)
         return;
     QByteArray bytearray = text.toLocal8Bit();
     bytearray = AnsiToUtf8(bytearray);
-    char *coursename = bytearray.data();
+    strcpy(coursename, bytearray.data());
 
     StuCrsInfo *p = new StuCrsInfo;
     strcpy(p->crs, coursename);

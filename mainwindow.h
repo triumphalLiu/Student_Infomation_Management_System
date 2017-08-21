@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAction>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,7 @@ public:
     void display_student_info();
     void display_course_info();
     void display_choose_info();
+    void contextMenuEvent(QContextMenuEvent *);
 
 private slots:
     void on_stu_read_triggered();
@@ -51,6 +53,15 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QAction *Act_Stu_Del;
+    QAction *Act_Stu_Chg;
+    QAction *Act_Stu_Add;
+    QAction *Act_Crs_Del;
+    QAction *Act_Crs_Add;
+    QAction *Act_Cho_Del;
+    QAction *Act_Cho_Add;
+    QAction *Act_Srh_Stu;
+    QAction *Act_Srh_Crs;
 };
 
 #endif // MAINWINDOW_H

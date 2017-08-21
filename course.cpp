@@ -42,7 +42,7 @@ bool course::read(const char *filename)
             i = 0;
             mode = 0;
             CourseInfo *point;
-            if((point = course::serh(p, 1)) != NULL)
+            if((point = course::serh(p, 0)) != NULL)
             {
                 strcpy(point->name, p->name);
             }

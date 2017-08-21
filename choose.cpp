@@ -39,10 +39,13 @@ bool choose::read(const char *filename)
             p->crs[i] = '\0';
             i = 0;
             mode = 0;
-            if(choose::head != NULL)
+            if(choose::serh(p, 2) == NULL)
+            {
+                if(choose::head != NULL)
                 p->next = choose::head;
-            choose::head = p;
-            ++choose::count;
+                choose::head = p;
+                ++choose::count;
+            }
             p = new StuCrsInfo;
             p->next = NULL;
         }
