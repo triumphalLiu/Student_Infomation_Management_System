@@ -85,6 +85,9 @@ bool course::save(const char *filename, CourseInfo *head)
         char buffer[20];
         itoa(p->score, buffer, 10);
         fprintf(fp, buffer);
+        fprintf(fp, " ");
+        itoa(p->type, buffer, 10);
+        fprintf(fp, buffer);
         fprintf(fp, "\n");
         p = p->next;
     }

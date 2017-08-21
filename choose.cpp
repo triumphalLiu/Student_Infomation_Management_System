@@ -39,6 +39,7 @@ bool choose::read(const char *filename)
             grade_temp[i++] = ch;
         else if(ch == '\n')
         {
+            grade_temp[i] = '\0';
             i = 0;
             mode = 0;
             p->grade = atoi(grade_temp);
@@ -80,6 +81,10 @@ bool choose::save(const char *filename)
         fprintf(fp, p->stu);
         fprintf(fp, " ");
         fprintf(fp, p->crs);
+        fprintf(fp, " ");
+        char buffer[20];
+        itoa(p->grade, buffer, 10);
+        fprintf(fp, buffer);
         fprintf(fp, "\n");
         p = p->next;
     }
