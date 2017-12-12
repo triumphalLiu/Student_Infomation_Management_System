@@ -4,18 +4,13 @@
 #include <cstdlib>
 student::student()
 {
-
+    student::count = 0;
+    student::head = NULL;
 }
 
 student::~student()
 {
 
-}
-
-void student::init()
-{
-    student::count = 0;
-    student::head = NULL;
 }
 
 bool student::read(const char *filename)

@@ -4,18 +4,13 @@
 #include <cstdlib>
 choose::choose()
 {
-
+    choose::count = 0;
+    choose::head = NULL;
 }
 
 choose::~choose()
 {
 
-}
-
-void choose::init()
-{
-    choose::count = 0;
-    choose::head = NULL;
 }
 
 bool choose::read(const char *filename)

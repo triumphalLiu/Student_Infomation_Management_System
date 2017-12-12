@@ -14,7 +14,6 @@ public:
     ~choose();
     int count;
     StuCrsInfo *head;
-    void init();
     bool read(const char *);
     bool save(const char *);
     StuCrsInfo *serh(StuCrsInfo *, int);

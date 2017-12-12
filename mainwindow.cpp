@@ -19,12 +19,11 @@
 #include "student.h"
 #include "course.h"
 #include "choose.h"
-extern student Student;
-//extern course_ac CourseAC;
-//extern course_lv CourseLV;
-//extern course_sc CourseSC;
-extern course Course;
-extern choose Choose;
+
+student Student;
+course Course;
+choose Choose;
+
 extern QByteArray AnsiToUtf8(QByteArray &ansi);
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -35,9 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //预先读取文件
     Student.read("stu.txt");
     Course.read("crs.txt");
-//    CourseAC.read("crs.txt");
-//    CourseLV.read("crs.txt");
-//    CourseSC.read("crs.txt");
     Choose.read("cho.txt");
     MainWindow::display_course_info();
     MainWindow::display_choose_info();

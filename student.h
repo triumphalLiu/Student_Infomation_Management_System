@@ -14,7 +14,6 @@ public:
     ~student();
     int count;
     StuInfo *head;
-    void init();
     bool read(const char *);
     bool save(const char *);
     StuInfo *serh(StuInfo *, int);

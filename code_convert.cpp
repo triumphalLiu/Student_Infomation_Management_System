@@ -1,5 +1,5 @@
 /*
- * Thanks to : http://blog.csdn.net/denny97104/article/details/45443055
+ * Refer to : http://blog.csdn.net/denny97104/article/details/45443055
  */
 #include <cstdio>
 #include <windows.h>

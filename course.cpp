@@ -4,18 +4,13 @@
 #include <cstdlib>
 course::course()
 {
-
+    course::count = 0;
+    course::head = NULL;
 }
 
 course::~course()
 {
 
-}
-
-void course::init()
-{
-    course::count = 0;
-    course::head = NULL;
 }
 
 bool course::read(const char *filename)
